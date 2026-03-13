@@ -1,0 +1,38 @@
+name: premium_quran
+description: A premium Quran audio player.
+publish_to: 'none'
+
+version: 1.0.0+1
+
+# THIS IS WHAT WAS MISSING:
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  
+  # State Management & Routing
+  flutter_riverpod: ^2.5.1
+  go_router: ^13.2.0
+  
+  # Audio Engine
+  just_audio: ^0.9.36
+  audio_service: ^0.18.12
+  
+  # Fonts & UI
+  google_fonts: ^6.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+  # Tell Flutter to load our audio and data folders
+  assets:
+    - assets/audio/
+    - assets/data/

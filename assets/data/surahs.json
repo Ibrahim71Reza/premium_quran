@@ -1,0 +1,26 @@
+[
+{
+    "id": 1,
+    "surahNo": "001",
+    "nameAr": "الفاتحة",
+    "nameEn": "Al-Fatihah",
+    "nameBn": "সূচনা, মুখবন্ধ",
+    "fileName": "001_al_fatihah.mp3"
+},
+{
+    "id": 2,
+    "surahNo": "002",
+    "nameAr": "البقرة",
+    "nameEn": "Al-Baqarah",
+    "nameBn": "গাভী, বকনা বাছুর",
+    "fileName": "002_al_baqarah.mp3"
+},
+{
+    "id": 3,
+    "surahNo": "003",
+    "nameAr": "آل عمران",
+    "nameEn": "Al-Imran",
+    "nameBn": "ইমরানের বংশধর",
+    "fileName": "003_al_imran.mp3"
+}
+]
