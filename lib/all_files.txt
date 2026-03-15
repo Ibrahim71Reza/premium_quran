@@ -1,0 +1,2208 @@
+.\all_files.py ->
+import os
+
+output_file = "all_files.txt"
+
+with open(output_file, "w", encoding="utf-8") as out:
+    for root, dirs, files in os.walk("."):
+        for filename in files:
+            file_path = os.path.join(root, filename)
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+                out.write(f"{file_path} ->\n")
+                out.write(content)
+                out.write("\n\n")  # spacing between files
+            except Exception as e:
+                out.write(f"{file_path} ->\n[Error reading file: {e}]\n\n")
+
+print(f"✅ All file contents have been written to '{output_file}'.")
+
+.\all_files.txt ->
+
+
+.\main.dart ->
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:just_audio_background/just_audio_background.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+import 'app/theme/app_theme.dart';
+import 'features/home/home_screen.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.premiumquran.audio',
+    androidNotificationChannelName: 'Premium Quran Audio',
+    androidNotificationOngoing: true,
+  );
+
+  await Hive.initFlutter();
+  await Hive.openBox<List>('playlistsBox');
+
+  runApp(const ProviderScope(child: PremiumQuranApp()));
+}
+
+class PremiumQuranApp extends StatelessWidget {
+  const PremiumQuranApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Premium Quran',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.darkTheme,
+      themeMode: ThemeMode.dark,
+      home: const HomeScreen(),
+    );
+  }
+}
+
+.\app\theme\app_colors.dart ->
+import 'package:flutter/material.dart';
+
+class AppColors {
+  static const Color background = Color(0xFF070B12);
+  static const Color backgroundSecondary = Color(0xFF0E1420);
+
+  static const Color surface = Color(0xFF111827);
+  static const Color surfaceSoft = Color(0xFF172033);
+  static const Color surfaceVariant = Color(0xFF1E293B);
+
+  static const Color emerald = Color(0xFF10B981);
+  static const Color emeraldSoft = Color(0xFF34D399);
+
+  static const Color goldAccent = Color(0xFFD4AF37);
+  static const Color goldSoft = Color(0xFFF6D365);
+
+  static const Color textPrimary = Color(0xFFF8FAFC);
+  static const Color textSecondary = Color(0xFF94A3B8);
+  static const Color textMuted = Color(0xFF64748B);
+
+  static const Color danger = Color(0xFFEF4444);
+
+  static const LinearGradient premiumBackgroundGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xFF070B12),
+      Color(0xFF0E1420),
+      Color(0xFF111827),
+    ],
+  );
+
+  static const LinearGradient emeraldGlowGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xFF10B981),
+      Color(0xFF34D399),
+    ],
+  );
+
+  static const LinearGradient goldGlowGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xFFD4AF37),
+      Color(0xFFF6D365),
+    ],
+  );
+}
+
+.\app\theme\app_theme.dart ->
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'app_colors.dart';
+
+class AppTheme {
+  static ThemeData get darkTheme {
+    final base = ThemeData.dark(useMaterial3: true);
+
+    return base.copyWith(
+      useMaterial3: true,
+      brightness: Brightness.dark,
+      scaffoldBackgroundColor: AppColors.background,
+      colorScheme: const ColorScheme.dark(
+        primary: AppColors.emerald,
+        secondary: AppColors.goldAccent,
+        surface: AppColors.surface,
+      ),
+      textTheme: GoogleFonts.outfitTextTheme(base.textTheme).copyWith(
+        headlineMedium: GoogleFonts.outfit(
+          color: AppColors.textPrimary,
+          fontWeight: FontWeight.w700,
+        ),
+        titleLarge: GoogleFonts.outfit(
+          color: AppColors.textPrimary,
+          fontWeight: FontWeight.w700,
+        ),
+        titleMedium: GoogleFonts.outfit(
+          color: AppColors.textPrimary,
+          fontWeight: FontWeight.w600,
+        ),
+        bodyLarge: GoogleFonts.outfit(
+          color: AppColors.textPrimary,
+        ),
+        bodyMedium: GoogleFonts.outfit(
+          color: AppColors.textSecondary,
+        ),
+      ),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: false,
+        iconTheme: IconThemeData(color: AppColors.textPrimary),
+      ),
+      cardTheme: CardThemeData(
+        color: AppColors.surface,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: AppColors.surfaceSoft,
+        contentTextStyle: GoogleFonts.outfit(
+          color: AppColors.textPrimary,
+          fontWeight: FontWeight.w500,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppColors.surfaceSoft,
+        hintStyle: GoogleFonts.outfit(color: AppColors.textMuted),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: AppColors.emerald, width: 1.2),
+        ),
+      ),
+    );
+  }
+}
+
+.\core\models\surah.dart ->
+class Surah {
+  final int id;
+  final String surahNo;
+  final String nameAr;
+  final String nameEn;
+  final String nameBn;
+  final String fileName;
+
+  Surah({
+    required this.id,
+    required this.surahNo,
+    required this.nameAr,
+    required this.nameEn,
+    required this.nameBn,
+    required this.fileName,
+  });
+
+  // This factory takes the JSON from your file and turns it into a Dart Object
+  factory Surah.fromJson(Map<String, dynamic> json) {
+    return Surah(
+      id: json['id'],
+      surahNo: json['surahNo'],
+      nameAr: json['nameAr'],
+      nameEn: json['nameEn'],
+      nameBn: json['nameBn'],
+      fileName: json['fileName'],
+    );
+  }
+}
+
+.\core\services\audio_player_service.dart ->
+import 'dart:async';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'surah_service.dart';
+import '../models/surah.dart';
+
+final audioPlayerProvider = Provider<AudioPlayer>((ref) {
+  final player = AudioPlayer();
+  ref.onDispose(player.dispose);
+  return player;
+});
+
+AudioSource _buildSurahAudioSource(Surah surah) {
+  return AudioSource.uri(
+    Uri.parse('asset:///assets/audio/${surah.fileName}'),
+    tag: MediaItem(
+      id: surah.id.toString(),
+      title: surah.nameEn,
+      album: 'Premium Quran',
+      artist: 'Surah ${surah.surahNo} • ${surah.nameAr}',
+    ),
+  );
+}
+
+ConcatenatingAudioSource _buildPlaylistSource(List<Surah> surahs) {
+  return ConcatenatingAudioSource(
+    useLazyPreparation: true,
+    children: surahs.map(_buildSurahAudioSource).toList(),
+  );
+}
+
+Future<void> _savePlaybackState(
+  AudioPlayer player,
+  SharedPreferences prefs,
+) async {
+  final index = player.currentIndex ?? 0;
+  final positionSec = player.position.inSeconds;
+
+  await prefs.setInt('last_surah_index', index);
+  await prefs.setInt('last_position_sec', positionSec);
+}
+
+final playlistInitProvider = FutureProvider<void>((ref) async {
+  final player = ref.watch(audioPlayerProvider);
+  final surahs = await ref.watch(surahListProvider.future);
+  final prefs = await SharedPreferences.getInstance();
+
+  final playlist = _buildPlaylistSource(surahs);
+
+  final savedIndex = prefs.getInt('last_surah_index') ?? 0;
+  final savedPositionSec = prefs.getInt('last_position_sec') ?? 0;
+  final safeIndex = surahs.isEmpty ? 0 : savedIndex.clamp(0, surahs.length - 1);
+
+  await player.setAudioSource(
+    playlist,
+    initialIndex: safeIndex,
+    initialPosition: Duration(seconds: savedPositionSec),
+  );
+
+  int lastSavedIndex = safeIndex;
+  int lastSavedSecond = savedPositionSec;
+  bool saveInProgress = false;
+
+  Future<void> saveIfChanged() async {
+    if (saveInProgress) return;
+
+    final currentIndex = player.currentIndex ?? 0;
+    final currentSecond = player.position.inSeconds;
+
+    if (currentIndex == lastSavedIndex && currentSecond == lastSavedSecond) {
+      return;
+    }
+
+    saveInProgress = true;
+    try {
+      lastSavedIndex = currentIndex;
+      lastSavedSecond = currentSecond;
+      await _savePlaybackState(player, prefs);
+    } finally {
+      saveInProgress = false;
+    }
+  }
+
+  final positionSub = player.positionStream.listen((position) {
+    final sec = position.inSeconds;
+    if (player.playing && sec > 0 && sec % 15 == 0 && sec != lastSavedSecond) {
+      unawaited(saveIfChanged());
+    }
+  });
+
+  final currentIndexSub = player.currentIndexStream.listen((index) {
+    if (index != null) {
+      unawaited(saveIfChanged());
+    }
+  });
+
+  final playerStateSub = player.playerStateStream.listen((state) {
+    if (!state.playing || state.processingState == ProcessingState.completed) {
+      unawaited(saveIfChanged());
+    }
+  });
+
+  ref.onDispose(() {
+    unawaited(saveIfChanged());
+    unawaited(positionSub.cancel());
+    unawaited(currentIndexSub.cancel());
+    unawaited(playerStateSub.cancel());
+  });
+});
+
+final currentSurahProvider = StreamProvider<Surah?>((ref) {
+  final player = ref.watch(audioPlayerProvider);
+  final surahsAsync = ref.watch(surahListProvider);
+
+  return player.sequenceStateStream.map((state) {
+    if (state == null || state.sequence.isEmpty) return null;
+
+    final mediaItem = state.currentSource?.tag as MediaItem?;
+    if (mediaItem == null) return null;
+
+    final surahs = surahsAsync.value ?? [];
+    for (final surah in surahs) {
+      if (surah.id.toString() == mediaItem.id) return surah;
+    }
+    return null;
+  });
+});
+
+final isPlayingProvider = StreamProvider<bool>((ref) {
+  return ref.watch(audioPlayerProvider).playingStream;
+});
+
+final audioPositionProvider = StreamProvider<Duration>((ref) {
+  return ref.watch(audioPlayerProvider).positionStream;
+});
+
+final audioDurationProvider = StreamProvider<Duration?>((ref) {
+  return ref.watch(audioPlayerProvider).durationStream;
+});
+
+final shuffleModeProvider = StreamProvider<bool>((ref) {
+  return ref.watch(audioPlayerProvider).shuffleModeEnabledStream;
+});
+
+final loopModeProvider = StreamProvider<LoopMode>((ref) {
+  return ref.watch(audioPlayerProvider).loopModeStream;
+});
+
+final audioQueueManagerProvider = Provider<AudioQueueManager>((ref) {
+  return AudioQueueManager(ref);
+});
+
+class AudioQueueManager {
+  AudioQueueManager(this.ref);
+
+  final Ref ref;
+
+  Future<void> playQueueList(
+    List<Surah> surahs, {
+    int initialIndex = 0,
+    bool shuffle = false,
+  }) async {
+    if (surahs.isEmpty) return;
+
+    final player = ref.read(audioPlayerProvider);
+    final playlist = _buildPlaylistSource(surahs);
+    final safeIndex = initialIndex.clamp(0, surahs.length - 1);
+
+    await player.setAudioSource(
+      playlist,
+      initialIndex: safeIndex,
+      initialPosition: Duration.zero,
+    );
+
+    if (shuffle) {
+      await player.shuffle();
+      await player.setShuffleModeEnabled(true);
+    } else {
+      await player.setShuffleModeEnabled(false);
+    }
+
+    await player.play();
+  }
+}
+
+.\core\services\playlist_service.dart ->
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+final playlistProvider =
+    StateNotifierProvider<PlaylistNotifier, Map<String, List<int>>>((ref) {
+      return PlaylistNotifier();
+    });
+
+class PlaylistNotifier extends StateNotifier<Map<String, List<int>>> {
+  PlaylistNotifier() : _box = Hive.box<List>('playlistsBox'), super({}) {
+    _loadPlaylists();
+  }
+
+  final Box<List> _box;
+
+  void _loadPlaylists() {
+    final loadedPlaylists = <String, List<int>>{};
+
+    for (final key in _box.keys) {
+      final rawList = _box.get(key, defaultValue: const []) ?? const [];
+      loadedPlaylists[key.toString()] = rawList.cast<int>();
+    }
+
+    state = loadedPlaylists;
+  }
+
+  String _normalizeName(String name) {
+    return name.trim().replaceAll(RegExp(r'\s+'), ' ');
+  }
+
+  bool _containsNameInsensitive(String name) {
+    final lower = name.toLowerCase();
+    return state.keys.any((key) => key.toLowerCase() == lower);
+  }
+
+  Future<void> createPlaylist(
+    String name, {
+    List<int> initialIds = const [],
+  }) async {
+    final normalized = _normalizeName(name);
+
+    if (normalized.isEmpty) return;
+    if (normalized.length > 40) return;
+    if (_containsNameInsensitive(normalized)) return;
+
+    final uniqueIds = initialIds.toSet().toList();
+
+    await _box.put(normalized, uniqueIds);
+    state = {...state, normalized: uniqueIds};
+  }
+
+  Future<void> deletePlaylist(String name) async {
+    if (!state.containsKey(name)) return;
+
+    await _box.delete(name);
+
+    final newState = Map<String, List<int>>.from(state);
+    newState.remove(name);
+    state = newState;
+  }
+
+  Future<void> addSurahToPlaylist(String playlistName, int surahId) async {
+    final current = state[playlistName];
+    if (current == null) return;
+
+    if (current.contains(surahId)) return;
+
+    final updated = [...current, surahId];
+    await _box.put(playlistName, updated);
+    state = {...state, playlistName: updated};
+  }
+
+  Future<void> removeSurahFromPlaylist(String playlistName, int surahId) async {
+    final current = state[playlistName];
+    if (current == null) return;
+
+    final updated = List<int>.from(current)..remove(surahId);
+
+    await _box.put(playlistName, updated);
+    state = {...state, playlistName: updated};
+  }
+}
+
+.\core\services\surah_service.dart ->
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../models/surah.dart';
+
+final surahListProvider = FutureProvider<List<Surah>>((ref) async {
+  final response = await rootBundle.loadString('assets/data/surahs.json');
+  final List<dynamic> data = json.decode(response);
+  return data.map((json) => Surah.fromJson(json)).toList();
+});
+
+final searchQueryProvider = StateProvider<String>((ref) => '');
+
+final debouncedSearchQueryProvider = FutureProvider<String>((ref) async {
+  final query = ref.watch(searchQueryProvider);
+
+  await Future<void>.delayed(const Duration(milliseconds: 180));
+
+  return query.trim().toLowerCase();
+});
+
+final filteredSurahListProvider = FutureProvider<List<Surah>>((ref) async {
+  final allSurahs = await ref.watch(surahListProvider.future);
+  final query = await ref.watch(debouncedSearchQueryProvider.future);
+
+  if (query.isEmpty) return allSurahs;
+
+  return allSurahs.where((surah) {
+    return surah.nameEn.toLowerCase().contains(query) ||
+        surah.nameBn.toLowerCase().contains(query) ||
+        surah.nameAr.contains(query) ||
+        surah.id.toString() == query;
+  }).toList();
+});
+
+.\features\home\home_screen.dart ->
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/services/surah_service.dart';
+import '../../core/services/audio_player_service.dart';
+import '../../app/theme/app_colors.dart';
+import '../../shared/widgets/mini_player.dart';
+import '../../shared/widgets/playlist_bottom_sheet.dart';
+import '../library/library_screen.dart';
+
+final selectionProvider = StateProvider<Set<int>>((ref) => {});
+
+class HomeScreen extends ConsumerWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final surahListAsyncValue = ref.watch(filteredSurahListProvider);
+    ref.watch(playlistInitProvider);
+    final currentSurah = ref.watch(currentSurahProvider).value;
+
+    final selectedSurahs = ref.watch(selectionProvider);
+    final isSelectionMode = selectedSurahs.isNotEmpty;
+    final searchQuery = ref.watch(searchQueryProvider);
+
+    return Scaffold(
+      extendBody: true,
+      backgroundColor: AppColors.background,
+      appBar: isSelectionMode
+          ? AppBar(
+              backgroundColor: Colors.transparent,
+              leading: IconButton(
+                icon: const Icon(Icons.close_rounded),
+                onPressed: () =>
+                    ref.read(selectionProvider.notifier).state = {},
+              ),
+              title: Text(
+                '${selectedSurahs.length} Selected',
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: AppColors.emeraldGlowGradient,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.emerald.withOpacity(0.25),
+                          blurRadius: 18,
+                          spreadRadius: 1,
+                        ),
+                      ],
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.playlist_add_rounded,
+                          color: AppColors.background),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) => PlaylistBottomSheet(
+                            selectedSurahIds: selectedSurahs.toList(),
+                            onClearSelection: () =>
+                                ref.read(selectionProvider.notifier).state = {},
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : AppBar(
+              title: const Text(
+                'Premium Quran',
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 14),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceSoft,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.05),
+                      ),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.library_music_rounded,
+                        color: AppColors.emerald,
+                        size: 26,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LibraryScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: AppColors.premiumBackgroundGradient,
+        ),
+        child: Column(
+          children: [
+            if (!isSelectionMode) ...[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 14),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceSoft,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.white.withOpacity(0.04)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.16),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    onChanged: (value) =>
+                        ref.read(searchQueryProvider.notifier).state = value,
+                    decoration: const InputDecoration(
+                      hintText: 'Search by name, Arabic, Bangla or number...',
+                      prefixIcon: Icon(
+                        Icons.search_rounded,
+                        color: AppColors.emerald,
+                      ),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 14),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _InfoCard(
+                        icon: Icons.menu_book_rounded,
+                        title: 'Total Surahs',
+                        value: '114',
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _InfoCard(
+                        icon: Icons.tune_rounded,
+                        title: 'Search',
+                        value: searchQuery.trim().isEmpty ? 'All' : 'Filtered',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            Expanded(
+              child: surahListAsyncValue.when(
+                loading: () => const Center(
+                  child: CircularProgressIndicator(color: AppColors.emerald),
+                ),
+                error: (error, stack) => Center(
+                  child: Text(
+                    'Error: $error',
+                    style: const TextStyle(color: Colors.redAccent),
+                  ),
+                ),
+                data: (surahs) {
+                  if (surahs.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'No Surahs found.',
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 16,
+                        ),
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+                    itemCount: surahs.length,
+                    itemBuilder: (context, index) {
+                      final surah = surahs[index];
+                      final isThisSurahActive = currentSurah?.id == surah.id;
+                      final isSelected = selectedSurahs.contains(surah.id);
+
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 220),
+                        margin: const EdgeInsets.only(bottom: 12),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? AppColors.emerald.withOpacity(0.12)
+                              : isThisSurahActive
+                                  ? AppColors.surfaceSoft
+                                  : AppColors.surface,
+                          borderRadius: BorderRadius.circular(22),
+                          border: Border.all(
+                            color: isSelected
+                                ? AppColors.emerald.withOpacity(0.55)
+                                : isThisSurahActive
+                                    ? AppColors.goldAccent.withOpacity(0.30)
+                                    : Colors.white.withOpacity(0.04),
+                            width: 1.1,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: isSelected
+                                  ? AppColors.emerald.withOpacity(0.10)
+                                  : Colors.black.withOpacity(0.12),
+                              blurRadius: 20,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 10,
+                          ),
+                          leading: isSelectionMode
+                              ? Icon(
+                                  isSelected
+                                      ? Icons.check_circle_rounded
+                                      : Icons.radio_button_unchecked_rounded,
+                                  color: isSelected
+                                      ? AppColors.emerald
+                                      : AppColors.textSecondary,
+                                  size: 30,
+                                )
+                              : Container(
+                                  width: 52,
+                                  height: 52,
+                                  decoration: BoxDecoration(
+                                    gradient: isThisSurahActive
+                                        ? AppColors.emeraldGlowGradient
+                                        : null,
+                                    color: isThisSurahActive
+                                        ? null
+                                        : AppColors.surfaceVariant,
+                                    shape: BoxShape.circle,
+                                    boxShadow: isThisSurahActive
+                                        ? [
+                                            BoxShadow(
+                                              color: AppColors.emerald
+                                                  .withOpacity(0.25),
+                                              blurRadius: 16,
+                                              spreadRadius: 1,
+                                            ),
+                                          ]
+                                        : null,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      surah.id.toString(),
+                                      style: TextStyle(
+                                        color: isThisSurahActive
+                                            ? AppColors.background
+                                            : AppColors.textPrimary,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                          title: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  surah.nameEn,
+                                  style: TextStyle(
+                                    color: isThisSurahActive || isSelected
+                                        ? AppColors.textPrimary
+                                        : AppColors.textPrimary,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              if (isThisSurahActive)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 5,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    gradient: AppColors.goldGlowGradient,
+                                    borderRadius: BorderRadius.circular(999),
+                                  ),
+                                  child: const Text(
+                                    'Playing',
+                                    style: TextStyle(
+                                      color: AppColors.background,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                          subtitle: Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: Text(
+                              surah.nameBn,
+                              style: const TextStyle(
+                                color: AppColors.textSecondary,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                          trailing: Text(
+                            surah.nameAr,
+                            style: TextStyle(
+                              color: isThisSurahActive
+                                  ? AppColors.goldAccent
+                                  : AppColors.textSecondary,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          onLongPress: () {
+                            if (!isSelectionMode) {
+                              ref.read(selectionProvider.notifier).state = {
+                                surah.id,
+                              };
+                            }
+                          },
+                          onTap: () async {
+                            if (isSelectionMode) {
+                              final set = Set<int>.from(selectedSurahs);
+                              if (isSelected) {
+                                set.remove(surah.id);
+                              } else {
+                                set.add(surah.id);
+                              }
+                              ref.read(selectionProvider.notifier).state = set;
+                            } else {
+                              final player = ref.read(audioPlayerProvider);
+                              if (isThisSurahActive) {
+                                if (player.playing) {
+                                  player.pause();
+                                } else {
+                                  player.play();
+                                }
+                              } else {
+                                ref
+                                    .read(audioQueueManagerProvider)
+                                    .playQueueList(surahs, initialIndex: index);
+                              }
+                            }
+                          },
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: const MiniPlayer(),
+    );
+  }
+}
+
+class _InfoCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String value;
+
+  const _InfoCard({
+    required this.icon,
+    required this.title,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: Colors.white.withOpacity(0.04)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              gradient: AppColors.emeraldGlowGradient,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Icon(icon, color: AppColors.background, size: 22),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: AppColors.textMuted,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+.\features\library\library_screen.dart ->
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/services/playlist_service.dart';
+import '../../app/theme/app_colors.dart';
+import 'playlist_detail_screen.dart';
+
+class LibraryScreen extends ConsumerWidget {
+  const LibraryScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final playlists = ref.watch(playlistProvider);
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: const Text(
+          'My Library',
+          style: TextStyle(
+            fontWeight: FontWeight.w800,
+            color: AppColors.textPrimary,
+          ),
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: AppColors.premiumBackgroundGradient,
+        ),
+        child: playlists.isEmpty
+            ? const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Text(
+                    'No playlists yet.\nLong-press a Surah to create one.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 17,
+                      height: 1.6,
+                    ),
+                  ),
+                ),
+              )
+            : GridView.builder(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 24),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 0.95,
+                ),
+                itemCount: playlists.keys.length,
+                itemBuilder: (context, index) {
+                  final playlistName = playlists.keys.elementAt(index);
+                  final surahCount = playlists[playlistName]!.length;
+
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PlaylistDetailScreen(playlistName: playlistName),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(26),
+                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.15),
+                            blurRadius: 20,
+                            offset: const Offset(0, 12),
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(18),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 58,
+                              height: 58,
+                              decoration: BoxDecoration(
+                                gradient: AppColors.emeraldGlowGradient,
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                              child: const Icon(
+                                Icons.queue_music_rounded,
+                                color: AppColors.background,
+                                size: 30,
+                              ),
+                            ),
+                            const Spacer(),
+                            Text(
+                              playlistName,
+                              style: const TextStyle(
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 17,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 7,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.surfaceVariant,
+                                borderRadius: BorderRadius.circular(999),
+                              ),
+                              child: Text(
+                                '$surahCount Surahs',
+                                style: const TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+      ),
+    );
+  }
+}
+
+.\features\library\playlist_detail_screen.dart ->
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/services/playlist_service.dart';
+import '../../core/services/surah_service.dart';
+import '../../core/services/audio_player_service.dart';
+import '../../core/models/surah.dart';
+import '../../app/theme/app_colors.dart';
+import '../../shared/widgets/mini_player.dart';
+
+class PlaylistDetailScreen extends ConsumerWidget {
+  final String playlistName;
+  const PlaylistDetailScreen({super.key, required this.playlistName});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final playlists = ref.watch(playlistProvider);
+    final surahIds = playlists[playlistName] ?? [];
+    final allSurahs = ref.watch(surahListProvider).value ?? [];
+    final currentSurah = ref.watch(currentSurahProvider).value;
+
+    final surahMap = {for (final s in allSurahs) s.id: s};
+    final playlistSurahs = surahIds
+        .map((id) => surahMap[id])
+        .whereType<Surah>()
+        .toList();
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: Text(
+          playlistName,
+          style: const TextStyle(
+            fontWeight: FontWeight.w800,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: IconButton(
+              icon: const Icon(Icons.delete_outline_rounded,
+                  color: AppColors.danger),
+              onPressed: () {
+                ref.read(playlistProvider.notifier).deletePlaylist(playlistName);
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Playlist deleted'),
+                    backgroundColor: AppColors.danger,
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: AppColors.premiumBackgroundGradient,
+        ),
+        child: playlistSurahs.isEmpty
+            ? const Center(
+                child: Text(
+                  "No Surahs in this playlist.",
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 16,
+                  ),
+                ),
+              )
+            : Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 6, 20, 16),
+                    child: Container(
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: Colors.white.withOpacity(0.05)),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                width: 54,
+                                height: 54,
+                                decoration: BoxDecoration(
+                                  gradient: AppColors.goldGlowGradient,
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                                child: const Icon(
+                                  Icons.library_music_rounded,
+                                  color: AppColors.background,
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      playlistName,
+                                      style: const TextStyle(
+                                        color: AppColors.textPrimary,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w800,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      '${playlistSurahs.length} Surahs',
+                                      style: const TextStyle(
+                                        color: AppColors.textSecondary,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 18),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton.icon(
+                                  onPressed: () {
+                                    ref
+                                        .read(audioQueueManagerProvider)
+                                        .playQueueList(
+                                          playlistSurahs,
+                                          initialIndex: 0,
+                                        );
+                                  },
+                                  icon: const Icon(
+                                    Icons.play_arrow_rounded,
+                                    color: AppColors.background,
+                                  ),
+                                  label: const Text(
+                                    'Play All',
+                                    style: TextStyle(
+                                      color: AppColors.background,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.emerald,
+                                    foregroundColor: AppColors.background,
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 14,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                  onPressed: () {
+                                    ref
+                                        .read(audioQueueManagerProvider)
+                                        .playQueueList(
+                                          playlistSurahs,
+                                          initialIndex: 0,
+                                          shuffle: true,
+                                        );
+                                  },
+                                  icon: const Icon(
+                                    Icons.shuffle_rounded,
+                                    color: AppColors.emerald,
+                                  ),
+                                  label: const Text(
+                                    'Shuffle',
+                                    style: TextStyle(
+                                      color: AppColors.textPrimary,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                  style: OutlinedButton.styleFrom(
+                                    side: const BorderSide(
+                                      color: AppColors.emerald,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 14,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+                      itemCount: playlistSurahs.length,
+                      itemBuilder: (context, index) {
+                        final surah = playlistSurahs[index];
+                        final isThisSurahActive = currentSurah?.id == surah.id;
+
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 12),
+                          decoration: BoxDecoration(
+                            color: isThisSurahActive
+                                ? AppColors.surfaceSoft
+                                : AppColors.surface,
+                            borderRadius: BorderRadius.circular(22),
+                            border: Border.all(
+                              color: isThisSurahActive
+                                  ? AppColors.goldAccent.withOpacity(0.30)
+                                  : Colors.white.withOpacity(0.04),
+                            ),
+                          ),
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
+                            ),
+                            leading: Container(
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                gradient: isThisSurahActive
+                                    ? AppColors.emeraldGlowGradient
+                                    : null,
+                                color: isThisSurahActive
+                                    ? null
+                                    : AppColors.surfaceVariant,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  surah.id.toString(),
+                                  style: TextStyle(
+                                    color: isThisSurahActive
+                                        ? AppColors.background
+                                        : AppColors.textPrimary,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            title: Text(
+                              surah.nameEn,
+                              style: TextStyle(
+                                color: isThisSurahActive
+                                    ? AppColors.textPrimary
+                                    : AppColors.textPrimary,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
+                              ),
+                            ),
+                            subtitle: Text(
+                              surah.nameBn,
+                              style: const TextStyle(
+                                color: AppColors.textSecondary,
+                                fontSize: 13,
+                              ),
+                            ),
+                            trailing: IconButton(
+                              icon: const Icon(
+                                Icons.remove_circle_outline_rounded,
+                                color: AppColors.textSecondary,
+                              ),
+                              onPressed: () {
+                                ref
+                                    .read(playlistProvider.notifier)
+                                    .removeSurahFromPlaylist(
+                                      playlistName,
+                                      surah.id,
+                                    );
+                              },
+                            ),
+                            onTap: () {
+                              final player = ref.read(audioPlayerProvider);
+                              if (isThisSurahActive) {
+                                if (player.playing) {
+                                  player.pause();
+                                } else {
+                                  player.play();
+                                }
+                              } else {
+                                ref
+                                    .read(audioQueueManagerProvider)
+                                    .playQueueList(
+                                      playlistSurahs,
+                                      initialIndex: index,
+                                    );
+                              }
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+      ),
+      bottomNavigationBar: const MiniPlayer(),
+    );
+  }
+}
+
+.\features\player\player_screen.dart ->
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:just_audio/just_audio.dart';
+
+import '../../core/services/audio_player_service.dart';
+import '../../app/theme/app_colors.dart';
+
+class PlayerScreen extends ConsumerStatefulWidget {
+  const PlayerScreen({super.key});
+
+  @override
+  ConsumerState<PlayerScreen> createState() => _PlayerScreenState();
+}
+
+class _PlayerScreenState extends ConsumerState<PlayerScreen> {
+  double? _dragValue;
+
+  String _formatDuration(Duration? duration) {
+    if (duration == null) return "00:00";
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    final twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    final twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds"
+        .replaceFirst("00:", "");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final currentSurah = ref.watch(currentSurahProvider).value;
+    final isPlaying = ref.watch(isPlayingProvider).value ?? false;
+    final position = ref.watch(audioPositionProvider).value ?? Duration.zero;
+    final duration = ref.watch(audioDurationProvider).value ?? Duration.zero;
+    final isShuffleMode = ref.watch(shuffleModeProvider).value ?? false;
+    final loopMode = ref.watch(loopModeProvider).value ?? LoopMode.off;
+
+    if (currentSurah == null) {
+      return const Scaffold(backgroundColor: AppColors.background);
+    }
+
+    final maxSeconds = duration.inSeconds > 0 ? duration.inSeconds.toDouble() : 1.0;
+    final sliderValue = (_dragValue ?? position.inSeconds.toDouble()).clamp(0.0, maxSeconds);
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 34),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'Now Playing',
+          style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+        ),
+        centerTitle: true,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: AppColors.premiumBackgroundGradient,
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              children: [
+                const SizedBox(height: 10),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: 300,
+                        width: 300,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: const RadialGradient(
+                            colors: [
+                              Color(0xFF1E293B),
+                              Color(0xFF111827),
+                              Color(0xFF0B101A),
+                            ],
+                          ),
+                          border: Border.all(
+                            color: AppColors.goldAccent.withOpacity(0.24),
+                            width: 1.3,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.emerald.withOpacity(0.14),
+                              blurRadius: 35,
+                              spreadRadius: 6,
+                            ),
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.30),
+                              blurRadius: 30,
+                              offset: const Offset(0, 20),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                currentSurah.nameAr,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 54,
+                                  color: AppColors.goldAccent,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 42),
+                      Text(
+                        currentSurah.nameEn,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        currentSurah.nameBn,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                      Container(
+                        padding: const EdgeInsets.all(18),
+                        decoration: BoxDecoration(
+                          color: AppColors.surface,
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.04),
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            SliderTheme(
+                              data: SliderTheme.of(context).copyWith(
+                                activeTrackColor: AppColors.emerald,
+                                inactiveTrackColor: AppColors.surfaceVariant,
+                                thumbColor: AppColors.goldAccent,
+                                overlayColor: AppColors.goldAccent.withOpacity(0.12),
+                                trackHeight: 6,
+                                thumbShape: const RoundSliderThumbShape(
+                                  enabledThumbRadius: 8,
+                                ),
+                              ),
+                              child: Slider(
+                                min: 0,
+                                max: maxSeconds,
+                                value: sliderValue,
+                                onChanged: (value) {
+                                  setState(() => _dragValue = value);
+                                },
+                                onChangeEnd: (value) {
+                                  ref.read(audioPlayerProvider).seek(
+                                        Duration(seconds: value.toInt()),
+                                      );
+                                  setState(() => _dragValue = null);
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 6),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    _formatDuration(Duration(seconds: sliderValue.toInt())),
+                                    style: const TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    _formatDuration(duration),
+                                    style: const TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 26),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _GlassIconButton(
+                        icon: Icons.shuffle_rounded,
+                        color: isShuffleMode
+                            ? AppColors.emerald
+                            : AppColors.textSecondary,
+                        onTap: () async {
+                          final player = ref.read(audioPlayerProvider);
+                          if (isShuffleMode) {
+                            await player.setShuffleModeEnabled(false);
+                          } else {
+                            await player.shuffle();
+                            await player.setShuffleModeEnabled(true);
+                          }
+                        },
+                      ),
+                      _GlassIconButton(
+                        icon: Icons.skip_previous_rounded,
+                        color: AppColors.textPrimary,
+                        onTap: () {
+                          final player = ref.read(audioPlayerProvider);
+                          if (player.hasPrevious) player.seekToPrevious();
+                        },
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          final player = ref.read(audioPlayerProvider);
+                          if (isPlaying) {
+                            player.pause();
+                          } else {
+                            player.play();
+                          }
+                        },
+                        child: Container(
+                          width: 86,
+                          height: 86,
+                          decoration: BoxDecoration(
+                            gradient: AppColors.emeraldGlowGradient,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.emerald.withOpacity(0.30),
+                                blurRadius: 24,
+                                spreadRadius: 2,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                            size: 44,
+                            color: AppColors.background,
+                          ),
+                        ),
+                      ),
+                      _GlassIconButton(
+                        icon: Icons.skip_next_rounded,
+                        color: AppColors.textPrimary,
+                        onTap: () {
+                          final player = ref.read(audioPlayerProvider);
+                          if (player.hasNext) player.seekToNext();
+                        },
+                      ),
+                      _GlassIconButton(
+                        icon: loopMode == LoopMode.one
+                            ? Icons.repeat_one_rounded
+                            : Icons.repeat_rounded,
+                        color: loopMode == LoopMode.all
+                            ? AppColors.emerald
+                            : loopMode == LoopMode.one
+                                ? AppColors.goldAccent
+                                : AppColors.textSecondary,
+                        onTap: () async {
+                          final player = ref.read(audioPlayerProvider);
+                          if (loopMode == LoopMode.off) {
+                            await player.setLoopMode(LoopMode.all);
+                          } else if (loopMode == LoopMode.all) {
+                            await player.setLoopMode(LoopMode.one);
+                          } else {
+                            await player.setLoopMode(LoopMode.off);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _GlassIconButton extends StatelessWidget {
+  const _GlassIconButton({
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppColors.surface,
+      borderRadius: BorderRadius.circular(20),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: onTap,
+        child: SizedBox(
+          width: 58,
+          height: 58,
+          child: Icon(icon, color: color, size: 28),
+        ),
+      ),
+    );
+  }
+}
+
+.\shared\widgets\mini_player.dart ->
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../core/services/audio_player_service.dart';
+import '../../app/theme/app_colors.dart';
+import '../../features/player/player_screen.dart';
+
+class MiniPlayer extends ConsumerWidget {
+  const MiniPlayer({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentSurah = ref.watch(currentSurahProvider).value;
+    if (currentSurah == null) return const SizedBox.shrink();
+
+    final isPlaying = ref.watch(isPlayingProvider).value ?? false;
+    final position = ref.watch(audioPositionProvider).value ?? Duration.zero;
+    final duration = ref.watch(audioDurationProvider).value ?? Duration.zero;
+
+    final progress = duration.inMilliseconds <= 0
+        ? 0.0
+        : (position.inMilliseconds / duration.inMilliseconds).clamp(0.0, 1.0);
+
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const PlayerScreen(),
+                fullscreenDialog: true,
+              ),
+            );
+          },
+          child: Container(
+            height: 78,
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: Colors.white.withOpacity(0.05)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.20),
+                  blurRadius: 24,
+                  offset: const Offset(0, 12),
+                ),
+              ],
+            ),
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        bottom: Radius.circular(24),
+                      ),
+                      child: LinearProgressIndicator(
+                        value: progress,
+                        backgroundColor: AppColors.surfaceVariant,
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          AppColors.emerald,
+                        ),
+                        minHeight: 4,
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          gradient: AppColors.goldGlowGradient,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Center(
+                          child: Text(
+                            currentSurah.id.toString(),
+                            style: const TextStyle(
+                              color: AppColors.background,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              currentSurah.nameEn,
+                              style: const TextStyle(
+                                color: AppColors.textPrimary,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 15,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 3),
+                            Text(
+                              currentSurah.nameBn,
+                              style: const TextStyle(
+                                color: AppColors.textSecondary,
+                                fontSize: 12,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: AppColors.emeraldGlowGradient,
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child: IconButton(
+                          iconSize: 30,
+                          color: AppColors.background,
+                          icon: Icon(
+                            isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                          ),
+                          onPressed: () {
+                            final player = ref.read(audioPlayerProvider);
+                            if (isPlaying) {
+                              player.pause();
+                            } else {
+                              player.play();
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+.\shared\widgets\playlist_bottom_sheet.dart ->
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/services/playlist_service.dart';
+import '../../app/theme/app_colors.dart';
+
+class PlaylistBottomSheet extends ConsumerStatefulWidget {
+  final List<int> selectedSurahIds;
+  final VoidCallback onClearSelection;
+
+  const PlaylistBottomSheet({
+    super.key,
+    required this.selectedSurahIds,
+    required this.onClearSelection,
+  });
+
+  @override
+  ConsumerState<PlaylistBottomSheet> createState() =>
+      _PlaylistBottomSheetState();
+}
+
+class _PlaylistBottomSheetState extends ConsumerState<PlaylistBottomSheet> {
+  final TextEditingController _playlistNameController = TextEditingController();
+
+  @override
+  void dispose() {
+    _playlistNameController.dispose();
+    super.dispose();
+  }
+
+  String _normalizeName(String name) {
+    return name.trim().replaceAll(RegExp(r'\s+'), ' ');
+  }
+
+  Future<void> _addToPlaylist(String playlistName) async {
+    for (final id in widget.selectedSurahIds) {
+      await ref
+          .read(playlistProvider.notifier)
+          .addSurahToPlaylist(playlistName, id);
+    }
+
+    widget.onClearSelection();
+    if (!mounted) return;
+
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Added ${widget.selectedSurahIds.length} Surahs to $playlistName',
+        ),
+        backgroundColor: AppColors.emerald,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final playlists = ref.watch(playlistProvider);
+
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: AppColors.premiumBackgroundGradient,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 42,
+            height: 5,
+            decoration: BoxDecoration(
+              color: AppColors.textMuted,
+              borderRadius: BorderRadius.circular(999),
+            ),
+          ),
+          const SizedBox(height: 18),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Add ${widget.selectedSurahIds.length} Surahs',
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Create a new playlist or add to an existing one',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 13,
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _playlistNameController,
+                  textInputAction: TextInputAction.done,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  decoration: const InputDecoration(
+                    hintText: 'New Playlist Name...',
+                    prefixIcon: Icon(
+                      Icons.music_note_rounded,
+                      color: AppColors.goldAccent,
+                    ),
+                  ),
+                  onSubmitted: (_) async {
+                    final name = _normalizeName(_playlistNameController.text);
+                    if (name.isEmpty) return;
+
+                    final existingName = playlists.keys.cast<String?>().firstWhere(
+                      (key) => key != null && key.toLowerCase() == name.toLowerCase(),
+                      orElse: () => null,
+                    );
+
+                    if (existingName != null) {
+                      await _addToPlaylist(existingName);
+                    } else {
+                      await ref.read(playlistProvider.notifier).createPlaylist(
+                            name,
+                            initialIds: widget.selectedSurahIds,
+                          );
+
+                      widget.onClearSelection();
+                      if (!mounted) return;
+
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Created $name & added ${widget.selectedSurahIds.length} Surahs',
+                          ),
+                          backgroundColor: AppColors.emerald,
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 12),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: AppColors.emeraldGlowGradient,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.emerald.withOpacity(0.25),
+                      blurRadius: 16,
+                    ),
+                  ],
+                ),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.add_rounded,
+                    color: AppColors.background,
+                  ),
+                  onPressed: () async {
+                    final name = _normalizeName(_playlistNameController.text);
+                    if (name.isEmpty) return;
+
+                    final existingName = playlists.keys.cast<String?>().firstWhere(
+                      (key) => key != null && key.toLowerCase() == name.toLowerCase(),
+                      orElse: () => null,
+                    );
+
+                    if (existingName != null) {
+                      await _addToPlaylist(existingName);
+                    } else {
+                      await ref.read(playlistProvider.notifier).createPlaylist(
+                            name,
+                            initialIds: widget.selectedSurahIds,
+                          );
+
+                      widget.onClearSelection();
+                      if (!mounted) return;
+
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Created $name & added ${widget.selectedSurahIds.length} Surahs',
+                          ),
+                          backgroundColor: AppColors.emerald,
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          const Divider(color: AppColors.surfaceVariant),
+          if (playlists.isEmpty)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 22),
+              child: Text(
+                'No playlists yet.',
+                style: TextStyle(color: AppColors.textSecondary),
+              ),
+            )
+          else
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 260),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: playlists.keys.length,
+                itemBuilder: (context, index) {
+                  final playlistName = playlists.keys.elementAt(index);
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.04),
+                      ),
+                    ),
+                    child: ListTile(
+                      leading: Container(
+                        width: 42,
+                        height: 42,
+                        decoration: BoxDecoration(
+                          gradient: AppColors.goldGlowGradient,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: const Icon(
+                          Icons.queue_music_rounded,
+                          color: AppColors.background,
+                        ),
+                      ),
+                      title: Text(
+                        playlistName,
+                        style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      subtitle: Text(
+                        "${playlists[playlistName]!.length} Surahs",
+                        style: const TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 12,
+                        ),
+                      ),
+                      trailing: const Icon(
+                        Icons.add_circle_outline_rounded,
+                        color: AppColors.emerald,
+                      ),
+                      onTap: () => _addToPlaylist(playlistName),
+                    ),
+                  );
+                },
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+

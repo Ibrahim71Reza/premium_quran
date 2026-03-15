@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'app/theme/app_theme.dart';
+import 'package:just_audio_background/just_audio_background.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() {
+import 'app/theme/app_theme.dart';
+import 'features/home/home_screen.dart';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'com.premiumquran.audio',
+    androidNotificationChannelName: 'Premium Quran Audio',
+    androidNotificationOngoing: true,
+  );
+
+  await Hive.initFlutter();
+  await Hive.openBox<List>('playlistsBox');
+
   runApp(const ProviderScope(child: PremiumQuranApp()));
 }
 
@@ -14,21 +28,10 @@ class PremiumQuranApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Premium Quran',
-      debugShowCheckedModeBanner: false, // Hides the red debug banner
-      theme: AppTheme.darkTheme,         // Applies our luxury colors
-      home: const Scaffold(
-        body: Center(
-          child: Text(
-            'Bismillah.\nFoundation Ready.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 24, 
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.darkTheme,
+      themeMode: ThemeMode.dark,
+      home: const HomeScreen(),
     );
   }
 }
